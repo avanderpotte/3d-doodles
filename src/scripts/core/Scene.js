@@ -43,7 +43,7 @@ class SceneObj extends Scene {
     this.camera = new PerspectiveCamera( this.options.fov, this.width / this.height, this.options.near, this.options.far )
     this.camera.position.copy( this.options.camera.position )
 
-    if ( this.options.postProcessing ) {
+    if ( this.options.postProcessing.active ) {
       this.initPostProcessing()
     }
 
