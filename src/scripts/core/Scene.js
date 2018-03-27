@@ -12,10 +12,10 @@ class SceneObj extends Scene {
         fov: 45,
         near: 1,
         far: 1000,
-        position: new Vector3( 0, 0, 10 )
+        position: new Vector3( 0, 0, 50 )
       },
       renderer: {
-        antialias: false,
+        antialias: true,
         alpha: true,
         pixelRatio: Math.max( 1, Math.min( window.devicePixelRatio, 2 ) )
       },
@@ -43,7 +43,7 @@ class SceneObj extends Scene {
     this.camera = new PerspectiveCamera( this.options.fov, this.width / this.height, this.options.near, this.options.far )
     this.camera.position.copy( this.options.camera.position )
 
-    if ( this.options.postProcessing ) {
+    if ( this.options.postProcessing.active ) {
       this.initPostProcessing()
     }
 
@@ -59,8 +59,7 @@ class SceneObj extends Scene {
   initControls () {
     this.controls = new OrbitControls( {
       position: this.camera.position.toArray(),
-      parent: this.renderer.domElement,
-      distanceBounds: [ 10, 20 ]
+      parent: this.renderer.domElement
     } )
     this.target = new Vector3()
     this.camera.lookAt( this.target )

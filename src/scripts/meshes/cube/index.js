@@ -1,4 +1,4 @@
-import { Mesh, Object3D, BoxGeometry, Color, ShaderMaterial } from 'three'
+import { Mesh, Object3D, BoxBufferGeometry, Color, ShaderMaterial, FlatShading } from 'three'
 import glslify from 'glslify'
 import fragmentShader from './shader/frag.glsl'
 import vertexShader from './shader/vert.glsl'
@@ -7,20 +7,18 @@ import GUI from 'Utils/GUI'
 class Cube extends Object3D {
   constructor () {
     super()
-    const geometry = new BoxGeometry( 2, 2, 2 )
-    this.colors = {
-      primary: '#EF6853',
-      secondary: '#F7904A'
-    }
+    const geometry = new BoxBufferGeometry( 20, 20, 20, 64, 64, 64 )
     this.uniforms = {
       uTime: { value: 0 },
-      uColorPrimary: { value: new Color( this.colors.primary ) },
-      uColorSecondary: { value: new Color( this.colors.secondary ) }
+      uColor: { value: new Color( '#19CBE2' ) },
+      uShift: { value: 4, range: [ 0, 10 ] }
     }
     const material = new ShaderMaterial( {
       uniforms: this.uniforms,
       fragmentShader: glslify( fragmentShader ),
-      vertexShader: glslify( vertexShader )
+      vertexShader: glslify( vertexShader ),
+      flatShading: FlatShading,
+      transparent: true
     } )
 
     this.mesh = new Mesh( geometry, material )
@@ -33,9 +31,7 @@ class Cube extends Object3D {
     this.rotation.range = [ -Math.PI, Math.PI ]
     GUI.panel
       .addGroup( { label: 'Cube' } )
-        .addSlider( this.rotation, 'x', 'range', { label: 'rX' } )
-        .addColor( this.colors, 'primary', { colorMode: 'hex', label: 'Primary Color', onChange: ( v ) => { this.uniforms.uColorPrimary.value = new Color( v ) } } )
-        .addColor( this.colors, 'secondary', { colorMode: 'hex', label: 'Secondary Color', onChange: ( v ) => { this.uniforms.uColorSecondary.value = new Color( v ) } } )
+        .addSlider( this.uniforms.uShift, 'value', 'range', { label: 'shift', step: 0.01 } )
   }
 
   update = ( dt ) => {
