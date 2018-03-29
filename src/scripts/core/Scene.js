@@ -1,6 +1,7 @@
 import { Scene, PerspectiveCamera, WebGLRenderer, Vector3 } from 'three'
 import Stats from 'stats-js'
-import OrbitControls from 'orbit-controls'
+// import OrbitControls from 'orbit-controls'
+import TrackballControls from '../utils/TrackballControls'
 import { EffectComposer, RenderPass } from 'postprocessing'
 import GUI from 'Utils/GUI'
 
@@ -12,7 +13,7 @@ class SceneObj extends Scene {
         fov: 45,
         near: 1,
         far: 1000,
-        position: new Vector3( 0, 0, 10 )
+        position: new Vector3( 0, 0, 70 )
       },
       renderer: {
         antialias: false,
@@ -57,11 +58,10 @@ class SceneObj extends Scene {
   }
 
   initControls () {
-    this.controls = new OrbitControls( {
-      position: this.camera.position.toArray(),
-      parent: this.renderer.domElement,
-      distanceBounds: [ 10, 20 ]
-    } )
+    this.controls = new TrackballControls( this.camera, this.renderer.domElement )
+    this.controls.rotateSpeed = 2
+    this.controls.noZoom = true
+    this.controls.noPan = true
     this.target = new Vector3()
     this.camera.lookAt( this.target )
   }
@@ -97,9 +97,6 @@ class SceneObj extends Scene {
   render ( dt ) {
     if ( this.options.debug.orbitControls ) {
       this.controls.update()
-      this.camera.position.fromArray( this.controls.position )
-      this.camera.up.fromArray( this.controls.up )
-      this.camera.lookAt( this.target.fromArray( this.controls.direction ) )
     }
 
     if ( this.options.postProcessing.active ) {
@@ -118,7 +115,9 @@ class SceneObj extends Scene {
     this.camera.updateProjectionMatrix()
 
     this.renderer.setSize( newWidth, newHeight )
-
+    if ( this.options.debug.orbitControls ) {
+      this.controls.handleResize()
+    }
     if ( this.composer ) {
       this.composer.setSize( newWidth, newHeight )
     }

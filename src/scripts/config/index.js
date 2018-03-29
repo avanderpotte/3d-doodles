@@ -2,11 +2,11 @@ import { BloomPass, GlitchPass } from 'postprocessing'
 import WavesPass from '../passes/Waves'
 export default {
   debug: {
-    stats: true,
+    stats: false,
     orbitControls: true
   },
   postProcessing: {
-    active: true,
+    active: false,
     passes: [
       {
         name: 'BloomPass',
